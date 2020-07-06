@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <title>Happy Birthday</title>
+</head>
+<link href='https://fonts.googleapis.com/css?family=Amita' rel='stylesheet'>
+<link rel="stylesheet" href="./style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.5/dat.gui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.7.0/Tween.js"></script>
+<script src="https://klevron.github.io/codepen/three.js/OrbitControls.js"></script>
+<script src="./emoji.js"></script>
+<script defer src="./script.js"></script>
+<style>
+    .name {
+        font-size: 130px;
+        font-family: 'Amita';
+        text-align: center;
+        animation: move forwards 30s;
+    }
+
+    .displayNone {
+        opacity: 0;
+    }
+
+    span .name {
+        animation: ani forwards 6s;
+    }
+
+    @keyframes ani {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes move {
+        0% {
+            margin-top: 0%;
+            opacity: 0;
+        }
+
+        100% {
+            margin-top: 10%;
+            opacity: 1;
+        }
+    }
+</style>
+
+<body>
+    <div id="name">
+        Happy Birthday <br />
+        Appli Gandi!!
+    </div>
+    <p id="help"></p>
+    <script>
+        const text = document.getElementById("name").innerText;
+        let alphabet = text.split('');
+        let i = 0;
+        document.getElementById(`name`).classList.add("name");
+        document.getElementById("name").innerHTML = '';
+        setInterval(() => {
+            if (i < alphabet.length) {
+                if (alphabet[i] === '\n')
+                    document.getElementById("name").innerHTML += `<br />`;
+                else
+                    document.getElementById("name").innerHTML += `${alphabet[i]}`;
+            }
+            i = i + 1;
+        }, 500);        
+    </script>
+</body>
+
+</html>
