@@ -39,6 +39,7 @@
       width: 0;
       animation: typing 5s steps(40, end) forwards, blink 1s step-end infinite;
       margin: 20px auto;
+      max-width: 100%;
     }
     @keyframes typing {
       from { width: 0 }
@@ -77,13 +78,42 @@
   0% { transform: translateY(100vh) rotate(45deg); }
   100% { transform: translateY(-10vh) rotate(45deg); }
 }
-audio {
-  display: none;
-}
 .footer {
   text-align: center;
   margin-top: 40px;
   color: #fff;
+}
+.surprise-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #ff4081;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.surprise-btn:hover {
+  background-color: #e91e63;
+}
+.surprise-message {
+  display: none;
+  margin-top: 20px;
+  font-size: 1.3em;
+  color: #673ab7;
+  animation: pop 1s ease forwards;
+}
+@keyframes pop {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 999;
 }
 
   </style>
@@ -92,10 +122,15 @@ audio {
   <div class="card">
     <h1>Happy Birthday Hiral!</h1>
     <div class="typing">To the sweetest nurse with the warmest heart. Keep shining, healing, and spreading smiles!</div>
-  </div>  <div class="hearts" id="hearts"></div>  <div class="footer">With love from your well-wisher</div>  <audio autoplay loop>
+    <button class="surprise-btn" onclick="showSurprise()">Click for a Surprise!</button>
+    <div class="surprise-message" id="surprise-msg">You are a true blessing to this world, Hiral! Stay awesome!</div>
+  </div>  <div class="hearts" id="hearts"></div>
+  <div class="footer">With love from your well-wisher</div>  <audio autoplay loop>
     <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
-  </audio>  <script>
+  </audio><canvas id="confetti"></canvas>
+
+  <script>
     // Floating hearts
     const heartsContainer = document.getElementById('hearts');
     for (let i = 0; i < 30; i++) {
@@ -104,6 +139,56 @@ audio {
       heart.style.left = Math.random() * 100 + '%';
       heart.style.animationDuration = (5 + Math.random() * 5) + 's';
       heartsContainer.appendChild(heart);
+    }
+
+    // Surprise button
+    function showSurprise() {
+      document.getElementById('surprise-msg').style.display = 'block';
+      startConfetti();
+    }
+
+    // Confetti animation
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confetti = [];
+    for (let i = 0; i < 150; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 50 + 50,
+        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+        tilt: Math.random() * 10 - 10
+      });
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.fillStyle = c.color;
+        ctx.fillRect(c.x + c.tilt, c.y, c.r, c.r);
+        ctx.fill();
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confetti.forEach(c => {
+        c.y += Math.cos(c.d) + 1;
+        c.tilt = Math.sin(c.d) * 15;
+        if (c.y > canvas.height) {
+          c.y = -10;
+          c.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    function startConfetti() {
+      setInterval(drawConfetti, 30);
     }
   </script></body>
 </html>
