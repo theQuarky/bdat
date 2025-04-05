@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +11,23 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #fbc2eb, #a6c1ee);
       overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background 3s ease;
     }
     .card {
+      width: 90%;
       max-width: 600px;
-      margin: 80px auto;
+      margin: 20px auto;
       background: white;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       text-align: center;
-      animation: fadeIn 2s ease-in-out;
+      animation: fadeIn 1s ease-in-out;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(30px); }
@@ -34,16 +42,26 @@
       font-size: 1.2em;
       color: #444;
       border-right: 3px solid #ff4081;
-      white-space: nowrap;
-      overflow: x-axis;
+      white-space: pre-wrap;
+      overflow: hidden;
       width: 100%;
-      animation: typing 5s steps(40, end) forwards, blink 1s step-end infinite;
+      animation: typing 2.5s steps(40, end), blink 1s step-end infinite;
       margin: 20px auto;
+      text-align: center;
+    }
+    .message {
+      display: inline-block;
       max-width: 100%;
+      opacity: 0;
+      animation: revealText 0.5s forwards;
+      animation-delay: 2.5s;
     }
     @keyframes typing {
       from { width: 0 }
       to { width: 100% }
+    }
+    @keyframes revealText {
+      to { opacity: 1; }
     }
     @keyframes blink {
       50% { border-color: transparent }
@@ -74,62 +92,193 @@
       position: absolute;
     }
     .heart:before { top: -10px; left: 0; }
-    .heart:after { left: -10px; top: 0; }@keyframes float {
-  0% { transform: translateY(100vh) rotate(45deg); }
-  100% { transform: translateY(-10vh) rotate(45deg); }
-}
-.footer {
-  text-align: center;
-  margin-top: 40px;
-  color: #fff;
-}
-.surprise-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #ff4081;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.surprise-btn:hover {
-  background-color: #e91e63;
-}
-.surprise-message {
-  display: none;
-  margin-top: 20px;
-  font-size: 1.3em;
-  color: #673ab7;
-  animation: pop 1s ease forwards;
-}
-@keyframes pop {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 999;
-}
-
+    .heart:after { left: -10px; top: 0; }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(45deg); }
+      100% { transform: translateY(-10vh) rotate(45deg); }
+    }
+    audio {
+      display: none;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      animation: fadeIn 2s ease-in-out;
+    }
+    /* Surprise elements */
+    .gift-box {
+      width: 100px;
+      height: 100px;
+      background: #ff4081;
+      position: relative;
+      margin: 30px auto 10px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      animation: bounce 2s infinite alternate;
+    }
+    .gift-box:hover {
+      animation-play-state: paused;
+    }
+    .gift-box:before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 100px;
+      background: #ff80ab;
+      top: 0;
+      left: 40px;
+    }
+    .gift-box:after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 20px;
+      background: #ff80ab;
+      top: 40px;
+      left: 0;
+    }
+    .gift-lid {
+      width: 110px;
+      height: 30px;
+      background: #ff1a66;
+      position: absolute;
+      top: -15px;
+      left: -5px;
+      z-index: 1;
+      transform-origin: center bottom;
+      transition: transform 1s ease;
+    }
+    .gift-box.open .gift-lid {
+      transform: rotateX(-110deg);
+    }
+    
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transform: translateY(-100vh);
+      z-index: -1;
+    }
+    
+    .surprise-text {
+      font-size: 1.5em;
+      color: #ff4081;
+      font-weight: bold;
+      opacity: 0;
+      transform: scale(0);
+      position: absolute;
+      transition: all 0.8s ease;
+    }
+    
+    .surprise-text.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    /* Color switch */
+    .color-mode {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #000, #fff);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 100;
+      transform: rotate(0deg);
+      transition: transform 0.5s ease;
+    }
+    
+    .color-mode:hover {
+      transform: rotate(180deg);
+    }
+    
+    .dark-mode {
+      background: linear-gradient(to right, #141e30, #243b55);
+    }
+    
+    .dark-mode .card {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    
+    .dark-mode h1 {
+      color: #ff80ab;
+    }
+    
+    .dark-mode .typing {
+      color: #ddd;
+      border-right-color: #ff80ab;
+    }
+    
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 2.5em;
+      }
+      .typing {
+        font-size: 1em;
+      }
+      .gift-box {
+        width: 80px;
+        height: 80px;
+      }
+      .gift-box:before {
+        width: 16px;
+        height: 80px;
+        left: 32px;
+      }
+      .gift-box:after {
+        width: 80px;
+        height: 16px;
+        top: 32px;
+      }
+      .gift-lid {
+        width: 90px;
+        height: 24px;
+        top: -12px;
+        left: -5px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="color-mode" id="colorMode"></div>
+
   <div class="card">
     <h1>Happy Birthday Hiral!</h1>
-    <div class="typing">To the sweetest nurse with the warmest heart. Keep shining, healing, and spreading smiles!</div>
-    <button class="surprise-btn" onclick="showSurprise()">Click for a Surprise!</button>
-    <div class="surprise-message" id="surprise-msg">You are a true blessing to this world, Hiral! Stay awesome!</div>
-  </div>  <div class="hearts" id="hearts"></div>
-  <div class="footer">With love from your well-wisher</div>  <audio autoplay loop>
+    <div class="typing">To the sweetest nurse with the warmest heart.</div>
+    <div class="message">Keep shining, healing, and spreading smiles!</div>
+    
+    <div class="gift-box" id="giftBox">
+      <div class="gift-lid"></div>
+    </div>
+    <div class="surprise-text" id="surpriseText">🎉 SURPRISE! 🎉</div>
+  </div>
+  
+  <div class="hearts" id="hearts"></div>
+  <div id="confettiContainer"></div>
+  
+  <div class="footer">With love from Hiren</div>
+  
+  <audio autoplay loop>
     <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
-  </audio><canvas id="confetti"></canvas>
-
+  </audio>
+  
   <script>
     // Floating hearts
     const heartsContainer = document.getElementById('hearts');
@@ -137,58 +286,83 @@ canvas {
       const heart = document.createElement('div');
       heart.className = 'heart';
       heart.style.left = Math.random() * 100 + '%';
-      heart.style.animationDuration = (5 + Math.random() * 5) + 's';
+      heart.style.opacity = 0.5 + Math.random() * 0.5;
+      heart.style.animationDuration = (3 + Math.random() * 7) + 's';
+      heart.style.animationDelay = (Math.random() * 5) + 's';
+      heart.style.transform = `scale(${0.5 + Math.random()}) rotate(45deg)`;
       heartsContainer.appendChild(heart);
     }
-
-    // Surprise button
-    function showSurprise() {
-      document.getElementById('surprise-msg').style.display = 'block';
-      startConfetti();
+    
+    // Gift box surprise
+    const giftBox = document.getElementById('giftBox');
+    const surpriseText = document.getElementById('surpriseText');
+    const confettiContainer = document.getElementById('confettiContainer');
+    
+    giftBox.addEventListener('click', function() {
+      this.classList.toggle('open');
+      
+      if (this.classList.contains('open')) {
+        // Show surprise text
+        surpriseText.style.opacity = '1';
+        surpriseText.style.transform = 'scale(1)';
+        
+        // Create confetti
+        createConfetti();
+        
+        // Play surprise sound
+        const surpriseSound = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+        surpriseSound.play().catch(e => console.log('Audio play failed:', e));
+      } else {
+        // Hide surprise text
+        surpriseText.style.opacity = '0';
+        surpriseText.style.transform = 'scale(0)';
+        
+        // Remove confetti
+        confettiContainer.innerHTML = '';
+      }
+    });
+    
+    // Create confetti function
+    function createConfetti() {
+      // Clear existing confetti
+      confettiContainer.innerHTML = '';
+      
+      // Create new confetti pieces
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = Math.random() * 10 + 5 + 'px';
+        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confetti.style.opacity = '1';
+        confetti.style.transform = 'translateY(0)';
+        confetti.style.transition = 'transform ' + (Math.random() * 3 + 2) + 's ease-out, opacity ' + (Math.random() * 3 + 2) + 's ease-out';
+        
+        // Add to container
+        confettiContainer.appendChild(confetti);
+        
+        // Animate falling
+        setTimeout(() => {
+          confetti.style.transform = `translateY(${100 + Math.random() * 20}vh) rotate(${Math.random() * 360}deg)`;
+          confetti.style.opacity = '0';
+        }, 10);
+      }
     }
-
-    // Confetti animation
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    let confetti = [];
-    for (let i = 0; i < 150; i++) {
-      confetti.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        r: Math.random() * 6 + 4,
-        d: Math.random() * 50 + 50,
-        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
-        tilt: Math.random() * 10 - 10
-      });
-    }
-
-    function drawConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      confetti.forEach(c => {
-        ctx.beginPath();
-        ctx.fillStyle = c.color;
-        ctx.fillRect(c.x + c.tilt, c.y, c.r, c.r);
-        ctx.fill();
-      });
-      updateConfetti();
-    }
-
-    function updateConfetti() {
-      confetti.forEach(c => {
-        c.y += Math.cos(c.d) + 1;
-        c.tilt = Math.sin(c.d) * 15;
-        if (c.y > canvas.height) {
-          c.y = -10;
-          c.x = Math.random() * canvas.width;
-        }
-      });
-    }
-
-    function startConfetti() {
-      setInterval(drawConfetti, 30);
-    }
-  </script></body>
+    
+    // Dark/Light mode toggle
+    const colorMode = document.getElementById('colorMode');
+    colorMode.addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+    });
+    
+    // Auto-trigger surprise after 5 seconds (optional)
+    setTimeout(() => {
+      if (!giftBox.classList.contains('open')) {
+        giftBox.click();
+      }
+    }, 5000);
+  </script>
+</body>
 </html>
