@@ -1,14 +1,18 @@
+// src/scenes/SummitScene.tsx
 import { Text } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
-import { Group } from 'three';
-import { createCloudPositions, createConfettiPositions } from './sceneUtils';
+import { Group, Mesh } from 'three';
+import { createConfettiPositions } from './sceneUtils';
+
+const SPRINKLE_COLORS = ['#ff6b9d', '#7ab6ff', '#ffd93d', '#c77dff', '#ffffff'];
+const SPRINKLE_COUNT = 10;
 
 const SummitScene = () => {
-  const cloudPositions = useMemo(() => createCloudPositions(), []);
   const confettiPositions = useMemo(() => createConfettiPositions(), []);
   const balloonGroup = useRef<Group>(null);
   const confettiGroup = useRef<Group>(null);
+  const flameRef = useRef<Mesh>(null);
 
   useFrame(({ clock }) => {
     const elapsed = clock.getElapsedTime();
@@ -18,26 +22,67 @@ const SummitScene = () => {
     if (confettiGroup.current) {
       confettiGroup.current.rotation.y = elapsed * 0.12;
     }
+    if (flameRef.current) {
+      const flicker = 1 + Math.sin(elapsed * 14) * 0.1 + Math.sin(elapsed * 27) * 0.05;
+      flameRef.current.scale.set(flicker * 0.9, flicker * 1.15, flicker * 0.9);
+      flameRef.current.rotation.z = Math.sin(elapsed * 9) * 0.18;
+    }
   });
 
   return (
     <group>
       <mesh position={[0, -1.1, -2.2]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[18, 12, 1, 1]} />
-        <meshStandardMaterial color="#f2e4cc" />
+        <meshBasicMaterial color="#f2e4cc" />
       </mesh>
 
-      <mesh position={[0, 0.38, -1.1]} scale={[1.2, 0.22, 0.8]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#a88f6c" />
+      {/* Birthday cake: plate, two frosted tiers, sprinkles, candle + flame. */}
+      <mesh position={[0, 0.28, -1.1]} scale={[1.35, 0.06, 1.35]}>
+        <cylinderGeometry args={[1, 1, 1, 28]} />
+        <meshBasicMaterial color="#f6efe2" />
       </mesh>
-      <mesh position={[0, 0.72, -1.1]} scale={[1, 0.24, 0.7]}>
-        <cylinderGeometry args={[0.85, 0.85, 0.46, 20]} />
-        <meshStandardMaterial color="#f6d7b1" />
+
+      <mesh position={[0, 0.56, -1.1]}>
+        <cylinderGeometry args={[0.62, 0.68, 0.5, 28]} />
+        <meshBasicMaterial color="#f8b4c6" />
       </mesh>
-      <mesh position={[0, 1.1, -1.1]} scale={[0.3, 0.4, 0.3]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#d9b284" />
+      <mesh position={[0, 0.82, -1.1]}>
+        <cylinderGeometry args={[0.665, 0.665, 0.08, 28]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+
+      <mesh position={[0, 1.06, -1.1]}>
+        <cylinderGeometry args={[0.42, 0.47, 0.42, 28]} />
+        <meshBasicMaterial color="#fff3e4" />
+      </mesh>
+      <mesh position={[0, 1.28, -1.1]}>
+        <cylinderGeometry args={[0.45, 0.45, 0.06, 28]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+
+      {Array.from({ length: SPRINKLE_COUNT }, (_, index) => {
+        const angle = (index / SPRINKLE_COUNT) * Math.PI * 2;
+        const radius = 0.64;
+        return (
+          <mesh
+            key={index}
+            position={[Math.cos(angle) * radius, 0.74 + (index % 2) * 0.05, -1.1 + Math.sin(angle) * radius]}
+            scale={[0.035, 0.035, 0.035]}
+          >
+            <boxGeometry args={[1, 1, 1]} />
+            <meshBasicMaterial color={SPRINKLE_COLORS[index % SPRINKLE_COLORS.length]} />
+          </mesh>
+        );
+      })}
+
+      <mesh position={[0, 1.46, -1.1]}>
+        <cylinderGeometry args={[0.032, 0.032, 0.3, 8]} />
+        <meshBasicMaterial color="#7ab6ff" />
+      </mesh>
+
+      <mesh ref={flameRef} position={[0, 1.68, -1.1]}>
+        <coneGeometry args={[0.045, 0.13, 8]} />
+        <meshBasicMaterial color="#ffcf5c" />
       </mesh>
 
       <group ref={balloonGroup}>
@@ -65,15 +110,33 @@ const SummitScene = () => {
       </group>
 
       <Text
-        position={[0, 1.75, -1.0]}
-        fontSize={0.32}
-        maxWidth={3}
+        position={[0, 2.2, -0.9]}
+        fontSize={0.26}
+        maxWidth={6}
         lineHeight={1.2}
-        letterSpacing={0.05}
+        letterSpacing={0.02}
         textAlign="center"
         color="#272b3a"
+        outlineWidth={0.01}
+        outlineColor="#ffffff"
+        outlineOpacity={0.8}
       >
-        Happy Birthday
+        Happy Birthday Shivani
+      </Text>
+
+      <Text
+        position={[0, 1.87, -0.9]}
+        fontSize={0.17}
+        maxWidth={6}
+        lineHeight={1.2}
+        letterSpacing={0.03}
+        textAlign="center"
+        color="#4a3f2f"
+        outlineWidth={0.006}
+        outlineColor="#ffffff"
+        outlineOpacity={0.7}
+      >
+        Have a great life ahead
       </Text>
     </group>
   );

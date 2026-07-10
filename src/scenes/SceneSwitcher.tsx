@@ -1,17 +1,24 @@
+// src/scenes/SceneSwitcher.tsx
 import NightScene from './NightScene';
 import ForestScene from './ForestScene';
-import RiverScene from './RiverScene';
-import TrailScene from './TrailScene';
 import SummitScene from './SummitScene';
+import SceneLayer from './SceneLayer';
 
-const SceneSwitcher = () => {
+interface SceneSwitcherProps {
+  activeStage: number;
+}
+
+// Order MUST match scenePositions / sceneStageColors in constants.ts.
+const SCENES = [NightScene, ForestScene, SummitScene];
+
+const SceneSwitcher = ({ activeStage }: SceneSwitcherProps) => {
   return (
     <>
-      <NightScene />
-      <ForestScene />
-      <RiverScene />
-      <TrailScene />
-      <SummitScene />
+      {SCENES.map((Scene, index) => (
+        <SceneLayer key={index} index={index} activeStage={activeStage}>
+          <Scene />
+        </SceneLayer>
+      ))}
     </>
   );
 };
