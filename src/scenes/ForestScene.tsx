@@ -196,7 +196,7 @@ const ForestScene = () => {
         outlineColor="#ffffff"
         outlineOpacity={0.85}
       >
-        Happy Birthday Shivani
+        Happy Birthday Seby
       </Text>
     </group>
   );
