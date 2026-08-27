@@ -214,7 +214,7 @@ const NightScene = () => {
           outlineColor="#8fb0e6"
           outlineOpacity={0.6}
         >
-          Happy Birthday Shivani
+          Happy Birthday Seby
         </Text>
       </group>
       {/* Horizon glow: grows upward from behind the ridge as day breaks.
