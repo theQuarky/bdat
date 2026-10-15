@@ -121,7 +121,7 @@ const SummitScene = () => {
         outlineColor="#ffffff"
         outlineOpacity={0.8}
       >
-        Happy Birthday Seby
+        Happy Birthday Mansudii
       </Text>
 
       <Text
